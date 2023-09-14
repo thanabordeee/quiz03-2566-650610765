@@ -5,14 +5,36 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request) => {
   readDB();
+  const roomId = request.nextUrl.searchParams.get("roomId");
+  const findRoom = DB.rooms.find((user)=>user.roomId === roomId);
+  if (!findRoom) {
+      return NextResponse.json(
+    {
+      ok: false,
+      message: `Room is not found`,
+    },
+    { status: 404 }
+  );
+  }
+  if (roomId) {
+    const R = [];
+    for  (const romId of DB.rooms) {
+      if (romId.roomId === roomId) {
+        R.push(romId.roomId);
+      }
+    }
+    const RR =[];
+  for(const roomId of R){
+    const RRR = DB.messages.find((x)=>x.roomId === roomId);
+    RR.push(RRR);
+  }
+  return NextResponse.json({
+    ok: true,
+    messages: RRR,
+  })
+  }
+  
 
-  // return NextResponse.json(
-  //   {
-  //     ok: false,
-  //     message: `Room is not found`,
-  //   },
-  //   { status: 404 }
-  // );
 };
 
 export const POST = async (request) => {
